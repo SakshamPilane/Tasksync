@@ -1,0 +1,15 @@
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/TasksyncApplication.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/dto/AuthRequest.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/dto/AuthResponse.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/dto/RegisterRequest.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/dto/UserResponseDTO.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/entity/RefreshToken.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/entity/Role.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/entity/User.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/repository/RefreshTokenRepository.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/repository/RoleRepository.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/repository/UserRepository.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/security/CustomUserDetails.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/security/CustomUserDetailsService.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/security/JwtFilter.java
+/Users/saksham/Documents/Projects/Tasksync/src/main/java/com/tasksync/security/JwtUtil.java
