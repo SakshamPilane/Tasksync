@@ -1,0 +1,70 @@
+###############################################
+# DEFAULT IGNORED FILES (IntelliJ internal)
+###############################################
+# IntelliJ project files
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Shelf & workspace
+shelf/
+workspace.xml
+
+
+###############################################
+# JAVA / MAVEN
+###############################################
+# Compiled class files
+*.class
+
+# Maven target directory
+target/
+
+# Log files
+*.log
+
+
+###############################################
+# SPRING BOOT SENSITIVE FILES
+###############################################
+src/main/resources/application.properties
+
+src/main/resources/application.yml
+
+
+###############################################
+# SYSTEM / OS FILES
+###############################################
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Linux
+*.swp
+*.swo
+
+
+###############################################
+# ENV & CREDENTIALS
+###############################################
+.env
+*.env
+.env.local
+.env.*
+
+
+###############################################
+# VS CODE
+###############################################
+.vscode/
+
+
+###############################################
+# MAVEN WRAPPER
+###############################################
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties

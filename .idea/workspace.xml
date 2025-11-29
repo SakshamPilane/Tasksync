@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="caab3ab3-3bd2-4f1d-974f-d791ebcd3f3b" name="Changes" comment="Initial Commit for Tasksync Repository" />
+    <list default="true" id="caab3ab3-3bd2-4f1d-974f-d791ebcd3f3b" name="Changes" comment="Initial Commit for Tasksync Repository">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -150,7 +152,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764391528959</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Initial Commit for Tasksync Repository">
+      <option name="closed" value="true" />
+      <created>1764391852259</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1764391852259</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
