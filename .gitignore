@@ -30,8 +30,13 @@ target/
 # SPRING BOOT SENSITIVE FILES
 ###############################################
 src/main/resources/application.properties
-
 src/main/resources/application.yml
+
+
+###############################################
+# DATABASE / SQL SCRIPTS
+###############################################
+tasksync.sql
 
 
 ###############################################

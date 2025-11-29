@@ -1,5 +1,7 @@
 package com.tasksync.service;
 
+import com.tasksync.dto.CreateUserRequest;
+import com.tasksync.dto.UpdateUserRequest;
 import com.tasksync.dto.UserResponseDTO;
 import com.tasksync.entity.Role;
 import com.tasksync.entity.User;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,7 +65,9 @@ public class UserService {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow();
 
-        user.setRoles(Set.of(role));
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);  // mutable set
+        user.setRoles(roles);
         userRepository.save(user);
 
         return "User roles updated";
@@ -78,4 +83,65 @@ public class UserService {
 
         return active ? "User activated" : "User deactivated";
     }
+
+    // ---------- Create user (ADMIN) ----------
+    public UserResponseDTO createUser(CreateUserRequest request) {
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        Role role = roleRepository.findByName(request.getRole())
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+
+        User newUser = new User();
+        newUser.setUsername(request.getUsername());
+        newUser.setEmail(request.getEmail());
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        // ❗ FIX: Use mutable set instead of Set.of()
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        newUser.setRoles(roles);
+
+        newUser.setActive(true);
+
+        User saved = userRepository.save(newUser);
+
+        return new UserResponseDTO(
+                saved.getId(),
+                saved.getUsername(),
+                saved.getEmail(),
+                saved.isActive()
+        );
+    }
+
+    // ---------- Update profile (SELF) ----------
+    public UserResponseDTO updateProfile(String username, UpdateUserRequest request) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (request.getEmail() != null) {
+            user.setEmail(request.getEmail());
+        }
+
+        if (request.getUsername() != null) {
+            user.setUsername(request.getUsername());
+        }
+
+        userRepository.save(user);
+
+        return new UserResponseDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.isActive()
+        );
+    }
+
 }

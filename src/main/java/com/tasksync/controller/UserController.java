@@ -1,5 +1,7 @@
 package com.tasksync.controller;
 
+import com.tasksync.dto.CreateUserRequest;
+import com.tasksync.dto.UpdateUserRequest;
 import com.tasksync.dto.UserResponseDTO;
 import com.tasksync.service.UserService;
 
@@ -52,5 +54,17 @@ public class UserController {
     public String setActiveStatus(@PathVariable Long id,
                                   @RequestParam boolean active) {
         return userService.setActiveStatus(id, active);
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public UserResponseDTO createUser(@RequestBody CreateUserRequest request) {
+        return userService.createUser(request);
+    }
+
+    @PutMapping("/update")
+    public UserResponseDTO updateProfile(Authentication auth,
+                                         @RequestBody UpdateUserRequest request) {
+        return userService.updateProfile(auth.getName(), request);
     }
 }
