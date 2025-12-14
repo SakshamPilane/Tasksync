@@ -2,6 +2,7 @@ package com.tasksync.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,10 +24,12 @@ public class Project {
 
     private String description;
 
+    // ---------------- Project Manager ----------------
     @ManyToOne
     @JoinColumn(name = "manager_id")
-    private User manager; // Project Manager
+    private User manager;
 
+    // ---------------- Project Members ----------------
     @ManyToMany
     @JoinTable(
             name = "project_members",
@@ -35,8 +38,18 @@ public class Project {
     )
     private Set<User> members = new HashSet<>();
 
-    private boolean archived = false;
+    // ---------------- Project State ----------------
+    private boolean archived = false;   // inactive but visible
+    private boolean deleted = false;    // soft deleted (trash)
 
+    // ---------------- Progress (Task Module Hook) ----------------
+    private int totalTasks = 0;
+    private int completedTasks = 0;
+    private double progressPercentage = 0.0;
+
+    // ---------------- Timestamps ----------------
+    @Column(updatable = false)
     private Instant createdAt = Instant.now();
+
     private Instant updatedAt = Instant.now();
 }
