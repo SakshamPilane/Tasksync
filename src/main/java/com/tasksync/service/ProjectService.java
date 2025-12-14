@@ -1,6 +1,7 @@
 package com.tasksync.service;
 
 import com.tasksync.dto.*;
+import com.tasksync.entity.NotificationType;
 import com.tasksync.entity.Project;
 import com.tasksync.entity.ProjectActivity;
 import com.tasksync.entity.User;
@@ -27,6 +28,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ProjectActivityRepository projectActivityRepository;
+    private final NotificationService notificationService;
 
     // ========================= CREATE PROJECT =========================
     public ProjectResponseDTO createProject(CreateProjectRequest request, String creatorUsername) {
@@ -131,6 +133,14 @@ public class ProjectService {
 
         projectRepository.save(project);
 
+        notificationService.createNotification(
+                userToAdd,
+                NotificationType.PROJECT_MEMBER_ADDED,
+                "You were added to project: " + project.getName(),
+                project.getId(),
+                null
+        );
+
         return "User added to project";
     }
 
@@ -156,6 +166,14 @@ public class ProjectService {
 
         projectRepository.save(project);
 
+        notificationService.createNotification(
+                userToRemove,
+                NotificationType.PROJECT_MEMBER_REMOVED,
+                "You were removed from project: " + project.getName(),
+                project.getId(),
+                null
+        );
+
         return "User removed from project";
     }
 
@@ -178,7 +196,39 @@ public class ProjectService {
 
         projectRepository.save(project);
 
+        for (User member : project.getMembers()) {
+            notificationService.createNotification(
+                    member,
+                    NotificationType.PROJECT_ARCHIVED,
+                    "Project archived: " + project.getName(),
+                    project.getId(),
+                    null
+            );
+        }
+
         return "Project archived";
+    }
+
+    // ========================= UNARCHIVE PROJECT =========================
+    public String unarchiveProject(Long projectId, String username, String role) {
+
+        Project project = authorizeProjectAccess(projectId, username, role);
+
+        if (!project.isArchived()) {
+            return "Project is not archived";
+        }
+
+        project.setArchived(false);
+        project.setUpdatedAt(Instant.now());
+
+        User actor = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Actor not found"));
+
+        logActivity(project, actor, "Unarchived the project");
+
+        projectRepository.save(project);
+
+        return "Project unarchived";
     }
 
     // ========================= PROJECT ACTIVITIES =========================

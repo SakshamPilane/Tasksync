@@ -112,6 +112,16 @@ public class ProjectController {
         return projectService.archiveProject(id, auth.getName(), role);
     }
 
+    @PutMapping("/{id}/unarchive")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+    public String unarchiveProject(
+            @PathVariable Long id,
+            Authentication auth
+    ) {
+        String role = auth.getAuthorities().iterator().next().getAuthority();
+        return projectService.unarchiveProject(id, auth.getName(), role);
+    }
+
     // ========================= ACTIVITIES =========================
     @GetMapping("/{id}/activities")
     public List<ProjectActivityDTO> getProjectActivities(
