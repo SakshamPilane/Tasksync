@@ -1,10 +1,7 @@
 package com.tasksync.service;
 
 import com.tasksync.dto.*;
-import com.tasksync.entity.NotificationType;
-import com.tasksync.entity.Project;
-import com.tasksync.entity.ProjectActivity;
-import com.tasksync.entity.User;
+import com.tasksync.entity.*;
 import com.tasksync.repository.ProjectActivityRepository;
 import com.tasksync.repository.ProjectRepository;
 import com.tasksync.repository.UserRepository;
@@ -13,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -29,6 +28,7 @@ public class ProjectService {
     private final UserRepository userRepository;
     private final ProjectActivityRepository projectActivityRepository;
     private final NotificationService notificationService;
+    private final WorkflowEngine workflowEngine;
 
     // ========================= CREATE PROJECT =========================
     public ProjectResponseDTO createProject(CreateProjectRequest request, String creatorUsername) {
@@ -195,6 +195,14 @@ public class ProjectService {
         logActivity(project, actor, "Archived the project");
 
         projectRepository.save(project);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("project", project);
+
+        workflowEngine.handleEvent(
+                WorkflowEventType.PROJECT_ARCHIVED,
+                context
+        );
 
         for (User member : project.getMembers()) {
             notificationService.createNotification(

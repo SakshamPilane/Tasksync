@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ public class TaskService {
     private final UserRepository userRepository;
     private final TaskActivityRepository taskActivityRepository;
     private final NotificationService notificationService;
+    private final WorkflowEngine workflowEngine;
 
     // ========================= CREATE TASK =========================
     public TaskResponseDTO createTask(
@@ -61,6 +64,15 @@ public class TaskService {
 
         taskRepository.save(task);
 
+        Map<String, Object> context = new HashMap<>();
+        context.put("task", task);
+        context.put("project", project);
+
+        workflowEngine.handleEvent(
+                WorkflowEventType.TASK_CREATED,
+                context
+        );
+
         // ---- Activity + Progress ----
         logTaskActivity(task, creator, "Created the task");
         recalculateProjectProgress(project);
@@ -90,6 +102,15 @@ public class TaskService {
 
         task.setUpdatedAt(Instant.now());
         taskRepository.save(task);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("task", task);
+        context.put("project", task.getProject());
+
+        workflowEngine.handleEvent(
+                WorkflowEventType.TASK_UPDATED,
+                context
+        );
 
         User actor = userRepository.findByUsername(username).orElseThrow();
         logTaskActivity(task, actor, "Updated task details");
@@ -122,6 +143,15 @@ public class TaskService {
         resetSla(task);
         task.setUpdatedAt(Instant.now());
         taskRepository.save(task);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("task", task);
+        context.put("project", task.getProject());
+
+        workflowEngine.handleEvent(
+                WorkflowEventType.TASK_ASSIGNED,
+                context
+        );
 
         notificationService.createNotification(
                 assignee,
@@ -170,6 +200,17 @@ public class TaskService {
         task.setStatus(status);
         task.setUpdatedAt(Instant.now());
         taskRepository.save(task);
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("task", task);
+        context.put("project", task.getProject());
+        context.put("fromStatus", oldStatus.name());
+        context.put("toStatus", status.name());
+
+        workflowEngine.handleEvent(
+                WorkflowEventType.TASK_STATUS_CHANGED,
+                context
+        );
 
         if (!task.getCreatedBy().equals(user)) {
             notificationService.createNotification(
